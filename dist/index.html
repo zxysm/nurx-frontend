@@ -6,9 +6,9 @@
         <meta charset="UTF-8">
 
         <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="css/font-awesome.css" rel="stylesheet" type="text/css" />
+        <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="css/opensans.css" rel="stylesheet" type="text/css" />
-        <link href="css/main.css" rel="stylesheet" type="text/css" />        
+        <link href="css/nurx.min.css" rel="stylesheet" type="text/css" />        
     </head>
     <body>
         <div class="sidebar">
@@ -56,7 +56,7 @@
 
                 <div class="row">
                     <div class="col-md-4">
-                        <div data-bind="foreach: pokemonListSorted">
+                        <div data-bind="foreach: pokemon.pokemonListSorted">
                             <div class="pokemon-row clearfix">
                                 <div class="poke-image" data-bind="attr: { style: 'background-image: url(img/pokemon/' + Base.PokemonId + '.png)' }"></div>
                                 <div class="poke-data">
@@ -81,10 +81,9 @@
         <script type="text/javascript" src="js/knockout-min.js"></script>
         <script type="text/javascript" src="js/numeral.min.js"></script>
         <script src='https://maps.googleapis.com/maps/api/js?v=3.exp'></script>
-        <script type="text/javascript" src="js/pokedata.js"></script>  
-        <script type="text/javascript" src="js/app.js"></script>  
+        <script type="text/javascript" src="js/nurx.min.js"></script>  
         <script type='text/javascript'>      
-            google.maps.event.addDomListener(window, 'load', window.vm.init); 
+            google.maps.event.addDomListener(window, 'load', window.nurx.navigation.init); 
         </script>     
     </body>
 </html>
