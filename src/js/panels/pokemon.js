@@ -1,5 +1,5 @@
 
-window.nurx.pokemon = (function() {
+window.nurx.registerPanel("pokemon", function(nurx) {
 
     // Observables.
     var pokemonListData = ko.observableArray([]);
@@ -32,13 +32,16 @@ window.nurx.pokemon = (function() {
     }
 
     // Setup websockets command listners.
-    window.nurx.commandListeners["pokemonlist"] = loadPokemonList;
+    nurx.commandListeners["pokemonlist"] = loadPokemonList;
 
     return {
         // Observables.
         pokemonListData: pokemonListData,
 
         // Computeds.
-        pokemonListSorted: pokemonListSorted
+        pokemonListSorted: pokemonListSorted,
+
+        // Functions.
+        init: function() {}
     };
-})();
+});

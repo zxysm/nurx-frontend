@@ -1,5 +1,5 @@
 
-window.nurx.log = (function() {
+window.nurx.registerPanel("log", function(nurx) {
     var maxLogLevel = 12;
     var logLevels = {
         0: 'None',
@@ -40,7 +40,9 @@ window.nurx.log = (function() {
     }
 
     // Setup websockets command listners.
-    window.nurx.commandListeners["log_message"] = logMessage;
+    nurx.commandListeners["log_message"] = logMessage;
 
-    return {};
-})();
+    return {
+        init: function() {}
+    };
+});

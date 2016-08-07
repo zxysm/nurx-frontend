@@ -1,5 +1,5 @@
 
-window.nurx.navigation = (function() {
+window.nurx.registerPanel("navigation", function(nurx) {
     var LOCATION_HISTORY_MAX_POINTS = 200;
 
     var map;
@@ -82,10 +82,10 @@ window.nurx.navigation = (function() {
     }
 
     // Setup websockets command listners.
-    window.nurx.commandListeners["update_location"] = updateLocation;
-    window.nurx.commandListeners["pokestops"] = loadPokestops;
+    nurx.commandListeners["update_location"] = updateLocation;
+    nurx.commandListeners["pokestops"] = loadPokestops;
 
     return {   
         init: init
     };
-})();
+});
