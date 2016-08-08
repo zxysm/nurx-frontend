@@ -58,7 +58,7 @@ window.nurx = (function() {
      * Create instance.
      */
     function createInstance() {
-
+        var instanceId = Math.floor((Math.random() * 100000));
         var commandListeners = {};
         var instancePanels = {}
 
@@ -135,8 +135,7 @@ window.nurx = (function() {
          */
         function handleMessage(evt) {
             var message = JSON.parse(evt.data);
-            console.log(commandListeners);
-            
+
             // Pass the message off to any registered command listeners.
             if(message.MessageType in commandListeners) {
                 commandListeners[message.MessageType](message);
@@ -161,6 +160,7 @@ window.nurx = (function() {
         var nurxInstance = {
             commandListeners: commandListeners,
             instancePanels: instancePanels,
+            instanceId: instanceId,
 
             // Obserbables.
             selectedPane: selectedPane,
@@ -189,40 +189,39 @@ window.nurx = (function() {
      * Handle window resizing.
      */
     function resizeWindow() {
-        var w = $(window).width();
-        var h = $(window).height();
+        var w = $(window).innerWidth();
+        var h = $(window).innerHeight();
+
+        console.log("Resizing...");
 
         $(".sidebar").css({
-            'position': 'fixed',
-            'height': '100%',
-            'width': SIDEBAR_WIDTH + 'px',
-            'left': '0px',
-            'top': '0px'
+            'height': (h - 40) + "px",
+            'width': SIDEBAR_WIDTH + 'px'
         });
 
         $(".pane-container").css({
-            'position': 'fixed',
-            'height': (h - LOG_HEIGHT) + "px",
-            'width': (w - SIDEBAR_WIDTH) + 'px',
-            'left': SIDEBAR_WIDTH + 'px',
-            'top': '0px'
+            'height': (h - LOG_HEIGHT - 40) + "px",
+            'width': (w - SIDEBAR_WIDTH) + 'px'                       
         });
+        $(".pane").css({
+            'height': (h - LOG_HEIGHT - 40) + "px",
+            'width': (w - SIDEBAR_WIDTH) + 'px'                       
+        });        
 
         $('.log').css({
-            'position': 'fixed',
             'height': LOG_HEIGHT + "px",
-            'width': (w - SIDEBAR_WIDTH) + 'px',
-            'left': SIDEBAR_WIDTH + 'px',
-            'bottom': '0px'            
+            'width': (w - SIDEBAR_WIDTH) + 'px'          
         });
     }
 
     // Setup window events, initialize window.
     $(window).resize(resizeWindow);
-    $(document).ready(function() {
-        resizeWindow();
+    $(document).ready(function() {       
         ko.applyBindings(vm);
-        createInstance();        
+        createInstance();
+        createInstance();
+
+        resizeWindow();
     })
 
     var vm = {    
@@ -263,16 +262,16 @@ window.nurx.registerPanel("log", function(nurx) {
             return;
             
         // Add new log entry, truncate old entries.
-        $("#log-content").append("<div class='log-entry log-color-" + message.Data.Level + "'>[" + logLevels[message.Data.Level] + "] " + message.Data.Message + '</div>');
-        $("#log-content").css({ height: ($("#log").height() - 20) + "px" });
+        $("#" + nurx.instanceId + " .log-content").append("<div class='log-entry log-color-" + message.Data.Level + "'>[" + logLevels[message.Data.Level] + "] " + message.Data.Message + '</div>');
+        $("#" + nurx.instanceId + " .log-content").css({ height: ($("#" + nurx.instanceId + " .log").height() - 20) + "px" });
 
-        while($(".log-entry").length > 100) {
-            $('#log-content').find('.log-entry:lt(1)').remove();
+        while($("#" + nurx.instanceId + " .log-entry").length > 100) {
+            $("#" + nurx.instanceId + " .log-content").find('.log-entry:lt(1)').remove();
         }
 
         // Auto scroll to bottom.
-        var height = $("#log-content")[0].scrollHeight;
-        $("#log-content").scrollTop(height);
+        var height = $("#" + nurx.instanceId + " .log-content")[0].scrollHeight;
+        $("#" + nurx.instanceId + " .log-content").scrollTop(height);
     }
 
     // Setup websockets command listners.

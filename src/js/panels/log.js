@@ -27,16 +27,16 @@ window.nurx.registerPanel("log", function(nurx) {
             return;
             
         // Add new log entry, truncate old entries.
-        $("#log-content").append("<div class='log-entry log-color-" + message.Data.Level + "'>[" + logLevels[message.Data.Level] + "] " + message.Data.Message + '</div>');
-        $("#log-content").css({ height: ($("#log").height() - 20) + "px" });
+        $("#" + nurx.instanceId + " .log-content").append("<div class='log-entry log-color-" + message.Data.Level + "'>[" + logLevels[message.Data.Level] + "] " + message.Data.Message + '</div>');
+        $("#" + nurx.instanceId + " .log-content").css({ height: ($("#" + nurx.instanceId + " .log").height() - 20) + "px" });
 
-        while($(".log-entry").length > 100) {
-            $('#log-content').find('.log-entry:lt(1)').remove();
+        while($("#" + nurx.instanceId + " .log-entry").length > 100) {
+            $("#" + nurx.instanceId + " .log-content").find('.log-entry:lt(1)').remove();
         }
 
         // Auto scroll to bottom.
-        var height = $("#log-content")[0].scrollHeight;
-        $("#log-content").scrollTop(height);
+        var height = $("#" + nurx.instanceId + " .log-content")[0].scrollHeight;
+        $("#" + nurx.instanceId + " .log-content").scrollTop(height);
     }
 
     // Setup websockets command listners.

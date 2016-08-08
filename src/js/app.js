@@ -24,7 +24,7 @@ window.nurx = (function() {
      * Create instance.
      */
     function createInstance() {
-
+        var instanceId = Math.floor((Math.random() * 100000));
         var commandListeners = {};
         var instancePanels = {}
 
@@ -101,8 +101,7 @@ window.nurx = (function() {
          */
         function handleMessage(evt) {
             var message = JSON.parse(evt.data);
-            console.log(commandListeners);
-            
+
             // Pass the message off to any registered command listeners.
             if(message.MessageType in commandListeners) {
                 commandListeners[message.MessageType](message);
@@ -127,6 +126,7 @@ window.nurx = (function() {
         var nurxInstance = {
             commandListeners: commandListeners,
             instancePanels: instancePanels,
+            instanceId: instanceId,
 
             // Obserbables.
             selectedPane: selectedPane,
@@ -155,40 +155,39 @@ window.nurx = (function() {
      * Handle window resizing.
      */
     function resizeWindow() {
-        var w = $(window).width();
-        var h = $(window).height();
+        var w = $(window).innerWidth();
+        var h = $(window).innerHeight();
+
+        console.log("Resizing...");
 
         $(".sidebar").css({
-            'position': 'fixed',
-            'height': '100%',
-            'width': SIDEBAR_WIDTH + 'px',
-            'left': '0px',
-            'top': '0px'
+            'height': (h - 40) + "px",
+            'width': SIDEBAR_WIDTH + 'px'
         });
 
         $(".pane-container").css({
-            'position': 'fixed',
-            'height': (h - LOG_HEIGHT) + "px",
-            'width': (w - SIDEBAR_WIDTH) + 'px',
-            'left': SIDEBAR_WIDTH + 'px',
-            'top': '0px'
+            'height': (h - LOG_HEIGHT - 40) + "px",
+            'width': (w - SIDEBAR_WIDTH) + 'px'                       
         });
+        $(".pane").css({
+            'height': (h - LOG_HEIGHT - 40) + "px",
+            'width': (w - SIDEBAR_WIDTH) + 'px'                       
+        });        
 
         $('.log').css({
-            'position': 'fixed',
             'height': LOG_HEIGHT + "px",
-            'width': (w - SIDEBAR_WIDTH) + 'px',
-            'left': SIDEBAR_WIDTH + 'px',
-            'bottom': '0px'            
+            'width': (w - SIDEBAR_WIDTH) + 'px'          
         });
     }
 
     // Setup window events, initialize window.
     $(window).resize(resizeWindow);
-    $(document).ready(function() {
-        resizeWindow();
+    $(document).ready(function() {       
         ko.applyBindings(vm);
-        createInstance();        
+        createInstance();
+        createInstance();
+
+        resizeWindow();
     })
 
     var vm = {    

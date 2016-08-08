@@ -11,20 +11,32 @@
         <link href="css/nurx.min.css" rel="stylesheet" type="text/css" />        
     </head>
     <body>
-        <div class="instance-list" data-bind="foreach: instances">
-                
+
+        <div class="instance-list">
+            <header>
+                <h1>Nurx</h1>
+            </header>
+
+            <div data-bind="foreach: instances">
+                <div class="instance-tab" data-bind="
+                    css: { 'instance-tab-selected':  ($root.selectedInstanceIdx() == $index()) },
+                    click: function() { $root.selectedInstanceIdx($index()); }"> 
+                    <span data-bind="text: (profileData() != null ? profileData().Username : '...')"></span>
+                </div>
+            </div>
+
+            <div class="instance-tab new-instance-tab">
+                <span>+</span>
+            </div>
         </div>
 
         <div data-bind="foreach: instances">
-            <div data-bind="if: ($root.selectedInstanceIdx() == $index())">
+            <div class="instance" data-bind="
+                css: { 'instance-hide': ($root.selectedInstanceIdx() != $index()) },
+                attr: { 'id': instanceId }">
                 <div class="sidebar">
-                    <header>
-                        <h1>Nurx</h1>
-                        <span class="small">A NecroBot Frontend</span>
-                    </header>
-
                     <div class="profile" data-bind="if: profileData() != null && statsData() != null">
-                        <h2 data-bind="text: profileData().Username"></h2>
+                        <h2 data-bind="text: profileData().Username + ' (' + $index() + ')'"></h2>
                         <span class="small" data-bind="text: 'Level: ' + statsData().Level + ' (' + statsData().CurrentXp + '/' + statsData().LevelupXp + ')'"></span>
                     </div>
 
@@ -33,19 +45,21 @@
                             css: { 'nav-item-selected': (selectedPane() == 'navigation') },
                             click: function() { selectedPane('navigation'); }
                             ">
-                            <i class="fa fa-map-marker" aria-hidden="true"></i> Navigation
+                            <span class="nav-icon"><i class="fa fa-map-marker" aria-hidden="true"></i></span>
+                            <span>Navigation</span>
                         </div>
                         <div class="nav-item" data-bind="
                             css: { 'nav-item-selected': (selectedPane() == 'inventory') },
                             click: function() { selectedPane('inventory'); }
                             ">
-                            <i class="fa fa-shopping-bag" aria-hidden="true"></i> Inventory
+                            <span class="nav-icon"><i class="fa fa-shopping-bag" aria-hidden="true"></i></span>
+                            <span>Inventory</span>
                         </div> 
                         <div class="nav-item" data-bind="
                             css: { 'nav-item-selected': (selectedPane() == 'pokemon') },
                             click: function() { selectedPane('pokemon'); }
                             ">
-                            Pokemon
+                            <span>Pokemon</span>
                         </div>                
                     </nav>
                 </div>
@@ -57,7 +71,7 @@
                         </div>
                     </div>
 
-                    <div class="map pane pane-padded" data-bind="css: { 'pane-hidden': (selectedPane() != 'pokemon') }">
+                    <div class="pane pane-padded" data-bind="css: { 'pane-hidden': (selectedPane() != 'pokemon') }">
                         <h1>Pokemon</h1>
 
                         <div class="row">
@@ -76,10 +90,9 @@
                     </div>
                 </div>        
 
-                <div class="log" id="log">
+                <div class="log">
                     <div class="log-header">Log</div>
-
-                    <div id="log-content"></pre>
+                    <div class="log-content"></div>
                 </div>
             </div>
         </div>
