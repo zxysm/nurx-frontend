@@ -35,9 +35,9 @@
                 css: { 'instance-hide': ($root.selectedInstanceIdx() != $index()) },
                 attr: { 'id': instanceId }">
                 <div class="sidebar">
-                    <div class="profile" data-bind="if: profileData() != null && statsData() != null">
+                    <div class="profile" data-bind="if: profileData() != null">
                         <h2 data-bind="text: profileData().Username + ' (' + $index() + ')'"></h2>
-                        <span class="small" data-bind="text: 'Level: ' + statsData().Level + ' (' + statsData().CurrentXp + '/' + statsData().LevelupXp + ')'"></span>
+                        <span class="small" data-bind="text: statsData() != null ? ('Level: ' + statsData().Level + ' (' + statsData().CurrentXp + '/' + statsData().LevelupXp + ')') : ''"></span>
                     </div>
 
                     <nav>
@@ -59,6 +59,7 @@
                             css: { 'nav-item-selected': (selectedPane() == 'pokemon') },
                             click: function() { selectedPane('pokemon'); }
                             ">
+                            <span class="nav-icon"><img src="img/pokeball.png" style="height: auto; width: 16px;" /></span>
                             <span>Pokemon</span>
                         </div>                
                     </nav>
@@ -67,7 +68,7 @@
                 <div class="pane-container">
                     <div class="map pane" data-bind="css: { 'pane-hidden': (selectedPane() != 'navigation') }">
                         <div style='overflow:hidden;height:100%;width:100%;'>
-                            <div id='gmap_canvas' style='height:100%;width:100%;'></div>            
+                            <div data-bind="attr: { id: 'gmap-' + instanceId }" style='height:100%;width:100%;'></div>            
                         </div>
                     </div>
 

@@ -19,7 +19,7 @@ window.nurx.registerPanel("navigation", function(nurx) {
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             styles: mapStyle
         };
-        map = new google.maps.Map(document.getElementById('gmap_canvas'), mapOptions);
+        map = new google.maps.Map(document.getElementById('gmap-' + nurx.instanceId), mapOptions);
 
         playerMarker = new google.maps.Marker({
             map: map,
