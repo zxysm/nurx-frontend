@@ -235,22 +235,25 @@ window.nurx = (function() {
 })();
 
 window.nurx.registerPanel("log", function(nurx) {
-    var maxLogLevel = 12;
+    var maxLogLevel = 15;
     var logLevels = {
         0: 'None',
         1: 'Error',
         2: 'Warning',
         3: 'Pokestop',
         4: 'Farming',
-        5: 'Recycling',
-        6: 'Berry',
-        7: 'Caught',
-        8: 'Transfer',
-        9: 'Evolve',
-        10: 'Egg',
-        11: 'Update',
-        12: 'Info',
-        13: 'Debug'
+        5: 'Sniper',
+        6: 'Recycling',
+        7: 'Berry',
+        8: 'Caught',
+        9: 'Flee',
+        10: 'Transfer',
+        11: 'Evolve',
+        12: 'Egg',
+        13: 'Update',
+        14: 'Info',
+        15: 'New',
+        16: 'Debug'
     };
 
     /**
