@@ -67,6 +67,56 @@
                     css: { 'instance-hide': ($root.selectedInstanceIdx() != $index()) },
                     attr: { 'id': instanceId }">
                     <div class="sidebar">
+                        <div data-bind="if: !isConnected()">
+                            <div class="center pad-v-30">
+                                <div class="preloader-wrapper small active">
+                                    <div class="spinner-layer spinner-blue">
+                                        <div class="circle-clipper left">
+                                        <div class="circle"></div>
+                                        </div><div class="gap-patch">
+                                        <div class="circle"></div>
+                                        </div><div class="circle-clipper right">
+                                        <div class="circle"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="spinner-layer spinner-red">
+                                        <div class="circle-clipper left">
+                                        <div class="circle"></div>
+                                        </div><div class="gap-patch">
+                                        <div class="circle"></div>
+                                        </div><div class="circle-clipper right">
+                                        <div class="circle"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="spinner-layer spinner-yellow">
+                                        <div class="circle-clipper left">
+                                        <div class="circle"></div>
+                                        </div><div class="gap-patch">
+                                        <div class="circle"></div>
+                                        </div><div class="circle-clipper right">
+                                        <div class="circle"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="spinner-layer spinner-green">
+                                        <div class="circle-clipper left">
+                                        <div class="circle"></div>
+                                        </div><div class="gap-patch">
+                                        <div class="circle"></div>
+                                        </div><div class="circle-clipper right">
+                                        <div class="circle"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="pad-v-15">
+                                    <span class="text-upper small" data-bind="text: connectionText"></span>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="profile" data-bind="if: profileData() != null">
                             <h2 data-bind="text: profileData().Username"></h2>
                             <span class="small" data-bind="text: statsData() != null ? ('Level: ' + statsData().Level + ' (' + statsData().CurrentXp + '/' + statsData().LevelupXp + ')') : ''"></span>

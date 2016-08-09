@@ -40,12 +40,14 @@ window.nurx = (function() {
         var statsData = ko.observable(null);
         var profileData = ko.observable(null);
         var isConnected = ko.observable(false);
+        var connectionText = ko.observable();
 
         /**
          * Initalize the frontend.
          */
         function init() { 
             // Connect to NecroBot.
+            connectionText("Connecting...");
             connectSocketServer();
 
             // Initalize all panels.
@@ -89,6 +91,8 @@ window.nurx = (function() {
             ws.onclose = function () { 
                 isConnected(false);
                 console.log( "Server connection closed."); 
+
+                connectionText("Connection lost, reconnecting...");
             }
         }
 
@@ -150,6 +154,7 @@ window.nurx = (function() {
             statsData: statsData,
             profileData: profileData,
             isConnected: isConnected,
+            connectionText: connectionText,
         
             // Functions.
             init: init,
