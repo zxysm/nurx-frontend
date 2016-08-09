@@ -53,7 +53,14 @@ window.nurx = (function() {
 
     var pokedata = window.pokedata;
 
+    var defaultModalOptions = {
+        ready: function() { $('#global').addClass('modal-active'); },
+        complete: function() { $('#global').removeClass('modal-active'); }
+    };
+
     var panels = {};
+
+    // Observables.
     var instances = ko.observableArray([]);
     var selectedInstanceIdx = ko.observable(-1);
 
@@ -254,8 +261,7 @@ window.nurx = (function() {
      * Show the dialog for adding a new instance.
      */
     function showNewInstanceDialog() {
-        $('#instance-create-modal').openModal();
-        $('#global').addClass('modal-active');
+        $('#instance-create-modal').openModal(defaultModalOptions);
 
         newInstUrl("localhost:" + DEFAULT_SERVICE_PORT);
         newInstUser("admin");
@@ -278,8 +284,7 @@ window.nurx = (function() {
      * Close the new instance modal.
      */
     function closeNewInstanceModal() {
-        $('#instance-create-modal').closeModal();
-        $('#global').removeClass('modal-active');
+        $('#instance-create-modal').closeModal(defaultModalOptions);
     }
 
     // Setup window events, initialize window.
@@ -409,7 +414,7 @@ window.nurx.registerPanel("navigation", function(nurx) {
     function init() {
         // Initialize the map.
         var mapOptions = {
-            zoom:16,
+            zoom:18,
             center: new google.maps.LatLng(51.5073509,-0.12775829999998223),
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             styles: mapStyle

@@ -14,7 +14,7 @@ window.nurx.registerPanel("navigation", function(nurx) {
     function init() {
         // Initialize the map.
         var mapOptions = {
-            zoom:16,
+            zoom:18,
             center: new google.maps.LatLng(51.5073509,-0.12775829999998223),
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             styles: mapStyle
