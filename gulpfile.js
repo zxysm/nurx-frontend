@@ -1,6 +1,7 @@
 var jsfiles = [
     './src/js/pokedata.js',
     './src/js/app.js',
+    './src/js/sessionloader.js',
     './src/js/panels/log.js',
     './src/js/panels/navigation.js',
     './src/js/panels/pokemon.js',

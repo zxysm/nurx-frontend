@@ -24,13 +24,16 @@ window.nurx.registerPanel("log", function(nurx) {
     /**
      * Handle logging.
      */
-    function logMessage(message) {  
+    function logMessage(message) {
+        // Log everything to console.
+        console.log(nurx.instanceId + "> " + message.Data.Message);
+
         // Don't log stuff over the max log level.
         if(message.Data.Level > maxLogLevel)
             return;
             
         // Add new log entry, truncate old entries.
-        $("#" + nurx.instanceId + " .log-content").append("<div class='log-entry log-color-" + message.Data.Level + "'>[" + logLevels[message.Data.Level] + "] " + message.Data.Message + '</div>');
+        $("#" + nurx.instanceId + " .log-content").append("<div class='log-entry log-color-" + logLevels[message.Data.Level] + "'>[" + logLevels[message.Data.Level] + "] " + message.Data.Message + '</div>');
         $("#" + nurx.instanceId + " .log-content").css({ height: ($("#" + nurx.instanceId + " .log").height() - 20) + "px" });
 
         while($("#" + nurx.instanceId + " .log-entry").length > 100) {
@@ -46,6 +49,7 @@ window.nurx.registerPanel("log", function(nurx) {
     nurx.commandListeners["log_message"] = logMessage;
 
     return {
+        logLevels: logLevels,                 
         init: function() {}
     };
 });

@@ -43,7 +43,11 @@ window.nurx = (function() {
 
     var panels = {};
     var instances = ko.observableArray([]);
-    var selectedInstanceIdx = ko.observable(0);
+    var selectedInstanceIdx = ko.observable(-1);
+
+    var newInstUrl = ko.observable();
+    var newInstUser = ko.observable();
+    var newInstPass = ko.observable();
     
     // Functions.
 
@@ -57,7 +61,7 @@ window.nurx = (function() {
     /**
      * Create instance.
      */
-    function createInstance() {
+    function createInstance(wsUrl, wsUser, wsPass) {
         var instanceId = Math.floor((Math.random() * 100000));
         var commandListeners = {};
         var instancePanels = {}
@@ -95,7 +99,7 @@ window.nurx = (function() {
                 return;
             }
 
-            ws = new window[support]('ws://localhost:' + DEFAULT_SERVICE_PORT + '/');        
+            ws = new window[support]('ws://' + wsUrl + '/');        
             ws.onmessage = handleMessage;
 
             // when the connection is established, this method is called
@@ -135,6 +139,7 @@ window.nurx = (function() {
          */
         function handleMessage(evt) {
             var message = JSON.parse(evt.data);
+            console.log(message);
 
             // Pass the message off to any registered command listeners.
             if(message.MessageType in commandListeners) {
@@ -158,6 +163,13 @@ window.nurx = (function() {
 
         // Create the instance viewmodel.
         var nurxInstance = {
+            // Credentials.
+            credentials: {
+                wsUrl: wsUrl,
+                wsUser: wsUser,
+                wsPass: wsPass
+            },
+
             commandListeners: commandListeners,
             instancePanels: instancePanels,
             instanceId: instanceId,
@@ -214,13 +226,37 @@ window.nurx = (function() {
         });
     }
 
+
+    /**
+     * Show the dialog for adding a new instance.
+     */
+    function showNewInstanceDialog() {
+        $(".modal").fadeIn(200);
+        $("#global").addClass("modal-active");
+        $("#instance-create-modal").fadeIn(200);
+        newInstUrl("localhost:" + DEFAULT_SERVICE_PORT);
+        newInstUser("admin");
+        newInstPass("");
+    }
+
+    /**
+     * Create the new instance tab.
+     */
+    function createNewInstanceTab() {
+        createInstance(newInstUrl(), newInstUser(), newInstPass());
+
+        $(".modal").fadeOut(200);
+        $("#global").removeClass("modal-active");
+        $("#instance-create-modal").fadeOut(200);
+
+        selectedInstanceIdx(instances().length - 1);
+        resizeWindow();        
+    }
+
     // Setup window events, initialize window.
     $(window).resize(resizeWindow);
     $(document).ready(function() {       
         ko.applyBindings(vm);
-        createInstance();
-        createInstance();
-
         resizeWindow();
     })
 
@@ -228,11 +264,39 @@ window.nurx = (function() {
         pokedata: pokedata,
         instances: instances,
         selectedInstanceIdx: selectedInstanceIdx,
+        newInstUrl: newInstUrl,
+        newInstUser: newInstUser,
+        newInstPass: newInstPass,
 
-        registerPanel: registerPanel
+        registerPanel: registerPanel,
+        showNewInstanceDialog: showNewInstanceDialog,
+        createNewInstanceTab: createNewInstanceTab
     };   
     return vm;
 })();
+$(document).ready(function() {
+    var sessionData = window.localStorage.getItem("nurx-sessions");
+    if(sessionData != null) {
+        try {
+            sessionData = JSON.parse(sessionData);
+
+            ko.utils.arrayForEach(sessionData, function(session) {
+                window.nurx.createInstance(session.wsUrl, session.wsUser, session.wsPass);
+            });
+        } catch (err) {
+            console.log("Error parsing previous session data: ", err)
+        }
+    }
+
+    window.setTimeout(function() {
+        var sessionSave = [];
+        ko.utils.arrayForEach(window.nurx.instances(), function(instance) {
+            sessionSave.push(instance.credentials);
+        });
+
+        window.localStorage.setItem("nurx-sessions", JSON.stringify(sessionSave));
+    }, 10000);
+})
 
 window.nurx.registerPanel("log", function(nurx) {
     var maxLogLevel = 15;
@@ -259,13 +323,16 @@ window.nurx.registerPanel("log", function(nurx) {
     /**
      * Handle logging.
      */
-    function logMessage(message) {  
+    function logMessage(message) {
+        // Log everything to console.
+        console.log(nurx.instanceId + "> " + message.Data.Message);
+
         // Don't log stuff over the max log level.
         if(message.Data.Level > maxLogLevel)
             return;
             
         // Add new log entry, truncate old entries.
-        $("#" + nurx.instanceId + " .log-content").append("<div class='log-entry log-color-" + message.Data.Level + "'>[" + logLevels[message.Data.Level] + "] " + message.Data.Message + '</div>');
+        $("#" + nurx.instanceId + " .log-content").append("<div class='log-entry log-color-" + logLevels[message.Data.Level] + "'>[" + logLevels[message.Data.Level] + "] " + message.Data.Message + '</div>');
         $("#" + nurx.instanceId + " .log-content").css({ height: ($("#" + nurx.instanceId + " .log").height() - 20) + "px" });
 
         while($("#" + nurx.instanceId + " .log-entry").length > 100) {
@@ -281,6 +348,7 @@ window.nurx.registerPanel("log", function(nurx) {
     nurx.commandListeners["log_message"] = logMessage;
 
     return {
+        logLevels: logLevels,                 
         init: function() {}
     };
 });
@@ -386,8 +454,21 @@ window.nurx.registerPanel("pokemon", function(nurx) {
         var clonedData = JSON.parse(JSON.stringify(pokemonListData()));
         var pokemonSortField = "Perfection";
 
+        // Strip out all null pokemon entries since they're messing stuff up.
+        var containsNullPoke = true;
+        while(containsNullPoke) {
+            containsNullPoke = false;
+            for(var i = 0; i < clonedData.length; i++) {
+                if(clonedData[i] == null) {
+                    clonedData.splice(i, 1);
+                    containsNullPoke = true;
+                    break;
+                }
+            }
+        }
+
         clonedData.sort(function(a, b) {
-            if(pokemonSortField == "Perfection") {
+            if(pokemonSortField == "Perfection") {              
                 if(a.Perfection == b.Perfection)
                     return 0;
                 else
@@ -400,12 +481,13 @@ window.nurx.registerPanel("pokemon", function(nurx) {
                 return a.Base[pokemonSortField] > a.Base[pokemonSortField] ? -1 : 1;
         });
 
+        console.log(clonedData);
         return clonedData;
     });
 
     // Functions.
     function loadPokemonList(message) {
-        pokemonListData(message.Data);
+        pokemonListData(message.Data); 
     }
 
     // Setup websockets command listners.

@@ -9,7 +9,11 @@ window.nurx = (function() {
 
     var panels = {};
     var instances = ko.observableArray([]);
-    var selectedInstanceIdx = ko.observable(0);
+    var selectedInstanceIdx = ko.observable(-1);
+
+    var newInstUrl = ko.observable();
+    var newInstUser = ko.observable();
+    var newInstPass = ko.observable();
     
     // Functions.
 
@@ -23,7 +27,7 @@ window.nurx = (function() {
     /**
      * Create instance.
      */
-    function createInstance() {
+    function createInstance(wsUrl, wsUser, wsPass) {
         var instanceId = Math.floor((Math.random() * 100000));
         var commandListeners = {};
         var instancePanels = {}
@@ -61,7 +65,7 @@ window.nurx = (function() {
                 return;
             }
 
-            ws = new window[support]('ws://localhost:' + DEFAULT_SERVICE_PORT + '/');        
+            ws = new window[support]('ws://' + wsUrl + '/');        
             ws.onmessage = handleMessage;
 
             // when the connection is established, this method is called
@@ -101,6 +105,7 @@ window.nurx = (function() {
          */
         function handleMessage(evt) {
             var message = JSON.parse(evt.data);
+            console.log(message);
 
             // Pass the message off to any registered command listeners.
             if(message.MessageType in commandListeners) {
@@ -124,6 +129,13 @@ window.nurx = (function() {
 
         // Create the instance viewmodel.
         var nurxInstance = {
+            // Credentials.
+            credentials: {
+                wsUrl: wsUrl,
+                wsUser: wsUser,
+                wsPass: wsPass
+            },
+
             commandListeners: commandListeners,
             instancePanels: instancePanels,
             instanceId: instanceId,
@@ -180,13 +192,37 @@ window.nurx = (function() {
         });
     }
 
+
+    /**
+     * Show the dialog for adding a new instance.
+     */
+    function showNewInstanceDialog() {
+        $(".modal").fadeIn(200);
+        $("#global").addClass("modal-active");
+        $("#instance-create-modal").fadeIn(200);
+        newInstUrl("localhost:" + DEFAULT_SERVICE_PORT);
+        newInstUser("admin");
+        newInstPass("");
+    }
+
+    /**
+     * Create the new instance tab.
+     */
+    function createNewInstanceTab() {
+        createInstance(newInstUrl(), newInstUser(), newInstPass());
+
+        $(".modal").fadeOut(200);
+        $("#global").removeClass("modal-active");
+        $("#instance-create-modal").fadeOut(200);
+
+        selectedInstanceIdx(instances().length - 1);
+        resizeWindow();        
+    }
+
     // Setup window events, initialize window.
     $(window).resize(resizeWindow);
     $(document).ready(function() {       
         ko.applyBindings(vm);
-        createInstance();
-        createInstance();
-
         resizeWindow();
     })
 
@@ -194,8 +230,13 @@ window.nurx = (function() {
         pokedata: pokedata,
         instances: instances,
         selectedInstanceIdx: selectedInstanceIdx,
+        newInstUrl: newInstUrl,
+        newInstUser: newInstUser,
+        newInstPass: newInstPass,
 
-        registerPanel: registerPanel
+        registerPanel: registerPanel,
+        showNewInstanceDialog: showNewInstanceDialog,
+        createNewInstanceTab: createNewInstanceTab
     };   
     return vm;
 })();

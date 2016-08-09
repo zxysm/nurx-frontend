@@ -12,71 +12,97 @@
     </head>
     <body>
 
-        <div class="instance-list">
-            <header>
-                <h1>Nurx</h1>
-            </header>
+        <div class="modal"></div>
 
-            <div data-bind="foreach: instances">
-                <div class="instance-tab" data-bind="
-                    css: { 'instance-tab-selected':  ($root.selectedInstanceIdx() == $index()) },
-                    click: function() { $root.selectedInstanceIdx($index()); }"> 
-                    <span data-bind="text: (profileData() != null ? profileData().Username : '...')"></span>
+        <div class="modal-window" id="instance-create-modal">
+            <div class="modal-window-header">Create Instance</div>
+            <div class="modal-window-content">
+                <div class="form-group">
+                    <label for='instance-url'>Server URL:</label>
+                    <input data-bind="value: newInstUrl" type="text" id='instance-url' class="nurx-control" />
                 </div>
-            </div>
 
-            <div class="instance-tab new-instance-tab">
-                <span>+</span>
+                <div class="form-group">
+                    <label for='instance-user'>Username:</label>
+                    <input data-bind="value: newInstUser" type="text" id='instance-user' class="nurx-control" />
+                </div>
+
+                <div class="form-group">
+                	<label for='instance-pass'>Password:</label>
+                    <input data-bind="value: newInstPass" type="passwrod" id='instance-pass' class="nurx-control" />
+                </div>
+
+                <div class="form-group clearfix text-right">
+                    <a href="#" data-bind="click: function() { createNewInstanceTab(); }" class="nurx-btn">Create New Tab</a>
+                </div>
             </div>
         </div>
 
-        <div data-bind="foreach: instances">
-            <div class="instance" data-bind="
-                css: { 'instance-hide': ($root.selectedInstanceIdx() != $index()) },
-                attr: { 'id': instanceId }">
-                <div class="sidebar">
-                    <div class="profile" data-bind="if: profileData() != null">
-                        <h2 data-bind="text: profileData().Username + ' (' + $index() + ')'"></h2>
-                        <span class="small" data-bind="text: statsData() != null ? ('Level: ' + statsData().Level + ' (' + statsData().CurrentXp + '/' + statsData().LevelupXp + ')') : ''"></span>
-                    </div>
+        <div id="global">
+            <div class="instance-list">
+                <header>
+                    <h1>Nurx</h1>
+                </header>
 
-                    <nav>
-                        <div class="nav-item" data-bind="
-                            css: { 'nav-item-selected': (selectedPane() == 'navigation') },
-                            click: function() { selectedPane('navigation'); }
-                            ">
-                            <span class="nav-icon"><i class="fa fa-map-marker" aria-hidden="true"></i></span>
-                            <span>Navigation</span>
-                        </div>
-                        <div class="nav-item" data-bind="
-                            css: { 'nav-item-selected': (selectedPane() == 'inventory') },
-                            click: function() { selectedPane('inventory'); }
-                            ">
-                            <span class="nav-icon"><i class="fa fa-shopping-bag" aria-hidden="true"></i></span>
-                            <span>Inventory</span>
-                        </div> 
-                        <div class="nav-item" data-bind="
-                            css: { 'nav-item-selected': (selectedPane() == 'pokemon') },
-                            click: function() { selectedPane('pokemon'); }
-                            ">
-                            <span class="nav-icon"><img src="img/pokeball.png" style="height: auto; width: 16px;" /></span>
-                            <span>Pokemon</span>
-                        </div>                
-                    </nav>
+                <div data-bind="foreach: instances">
+                    <div class="instance-tab" data-bind="
+                        css: { 'instance-tab-selected':  ($root.selectedInstanceIdx() == $index()) },
+                        click: function() { $root.selectedInstanceIdx($index()); }"> 
+                        <span data-bind="text: (profileData() != null ? profileData().Username : '...')"></span>
+                    </div>
                 </div>
 
-                <div class="pane-container">
-                    <div class="map pane" data-bind="css: { 'pane-hidden': (selectedPane() != 'navigation') }">
-                        <div style='overflow:hidden;height:100%;width:100%;'>
-                            <div data-bind="attr: { id: 'gmap-' + instanceId }" style='height:100%;width:100%;'></div>            
+                <div class="instance-tab new-instance-tab" data-bind="click: function() { showNewInstanceDialog(); }">
+                    <span>+</span>
+                </div>
+            </div>
+
+            <div data-bind="foreach: instances">
+                <div class="instance" data-bind="
+                    css: { 'instance-hide': ($root.selectedInstanceIdx() != $index()) },
+                    attr: { 'id': instanceId }">
+                    <div class="sidebar">
+                        <div class="profile" data-bind="if: profileData() != null">
+                            <h2 data-bind="text: profileData().Username"></h2>
+                            <span class="small" data-bind="text: statsData() != null ? ('Level: ' + statsData().Level + ' (' + statsData().CurrentXp + '/' + statsData().LevelupXp + ')') : ''"></span>
                         </div>
+
+                        <nav>
+                            <div class="nav-item" data-bind="
+                                css: { 'nav-item-selected': (selectedPane() == 'navigation') },
+                                click: function() { selectedPane('navigation'); }
+                                ">
+                                <span class="nav-icon"><i class="fa fa-map-marker" aria-hidden="true"></i></span>
+                                <span>Navigation</span>
+                            </div>
+                            <div class="nav-item" data-bind="
+                                css: { 'nav-item-selected': (selectedPane() == 'inventory') },
+                                click: function() { selectedPane('inventory'); }
+                                ">
+                                <span class="nav-icon"><i class="fa fa-shopping-bag" aria-hidden="true"></i></span>
+                                <span>Inventory</span>
+                            </div> 
+                            <div class="nav-item" data-bind="
+                                css: { 'nav-item-selected': (selectedPane() == 'pokemon') },
+                                click: function() { selectedPane('pokemon'); }
+                                ">
+                                <span class="nav-icon"><img src="img/pokeball.png" style="height: auto; width: 16px;" /></span>
+                                <span>Pokemon</span>
+                            </div>                
+                        </nav>
                     </div>
 
-                    <div class="pane pane-padded" data-bind="css: { 'pane-hidden': (selectedPane() != 'pokemon') }">
-                        <h1>Pokemon</h1>
+                    <div class="pane-container">
+                        <div class="map pane" data-bind="css: { 'pane-hidden': (selectedPane() != 'navigation') }">
+                            <div style='overflow:hidden;height:100%;width:100%;'>
+                                <div data-bind="attr: { id: 'gmap-' + instanceId }" style='height:100%;width:100%;'></div>            
+                            </div>
+                        </div>
 
-                        <div class="row">
-                            <div class="col-md-4">
+                        <div class="pane pane-padded" data-bind="css: { 'pane-hidden': (selectedPane() != 'pokemon') }">
+                            <h1>Pokemon</h1>
+
+                            <div class="col-md-4 col-sm-6">
                                 <div data-bind="foreach: pokemon.pokemonListSorted">
                                     <div class="pokemon-row clearfix">
                                         <div class="poke-image" data-bind="attr: { style: 'background-image: url(img/pokemon/' + Base.PokemonId + '.png)' }"></div>
@@ -88,12 +114,12 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>        
+                    </div>        
 
-                <div class="log">
-                    <div class="log-header">Log</div>
-                    <div class="log-content"></div>
+                    <div class="log">
+                        <div class="log-header">Log</div>
+                        <div class="log-content"></div>
+                    </div>
                 </div>
             </div>
         </div>
