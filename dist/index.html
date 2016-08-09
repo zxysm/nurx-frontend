@@ -6,6 +6,7 @@
         <meta charset="UTF-8">
 
         <link href="css/materialize.min.css" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="css/opensans.css" rel="stylesheet" type="text/css" />
         <link href="css/nurx.min.css" rel="stylesheet" type="text/css" />        
@@ -105,6 +106,25 @@
 
                         <div class="pane pane-padded" data-bind="css: { 'pane-hidden': (selectedPane() != 'pokemon') }">
                             <h1>Pokemon</h1>
+
+                            <div style="height: 50px">
+                                <div class="fixed-action-btn horizontal text-right" style="position: relative;">
+                                    <a class="btn-floating btn-large red" style="position: absolute; right: 10px;">
+                                        <i class="large material-icons">sort_by_alpha</i>
+                                    </a>
+                                    <ul>
+                                        <li><a data-bind="click: function() { pokemon.sortBy('Perfection'); }" class="btn-floating red"><i style='font-style: normal;'>IV</i></a></li>
+                                        <li><a data-bind="click: function() { pokemon.sortBy('Cp'); }" class="btn-floating yellow darken-1"><i style='font-style: normal;'>CP</i></a></li>
+                                        <li><a data-bind="click: function() { pokemon.sortBy('Hp'); }" class="btn-floating green"><i class="fa fa-heart-o" aria-hidden="true"></i></a></li>
+                                        <li><a data-bind="click: function() { pokemon.sortBy('PokemonId'); }" class="btn-floating blue"><i class="fa fa-hashtag" aria-hidden="true"></i></a></li>
+                                        <li><a data-bind="click: function() { pokemon.sortBy('CreationTimeMs'); }" class="btn-floating deep-purple"><i class="material-icons">query_builder</i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="pad-h-15 pad-v-10">
+                                <span style='font-family: "Roboto"; font-weight: 200; text-transform: uppercase;' data-bind="text: 'Sorted By: ' + pokemon.sortFieldDescription() + ' (' + (pokemon.sortAscending() ? 'Ascending' : 'Descending') + ')'"></span>
+                            </div>
 
                             <div class="row">
                                 <div data-bind="foreach: pokemon.pokemonListSorted">

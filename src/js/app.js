@@ -39,6 +39,7 @@ window.nurx = (function() {
         var selectedPane = ko.observable("navigation");
         var statsData = ko.observable(null);
         var profileData = ko.observable(null);
+        var isConnected = ko.observable(false);
 
         /**
          * Initalize the frontend.
@@ -70,7 +71,8 @@ window.nurx = (function() {
 
             // when the connection is established, this method is called
             ws.onopen = function () { 
-                console.log( "Server connection opened." ); 
+                console.log( "Server connection opened." );
+                isConnected(true);
                 
                 // Initial data retrieval.
                 sendCommand("location", {});
@@ -84,7 +86,10 @@ window.nurx = (function() {
             }
 
             // when the connection is closed, this method is called
-            ws.onclose = function () { console.log( "Server connection closed."); }
+            ws.onclose = function () { 
+                isConnected(false);
+                console.log( "Server connection closed."); 
+            }
         }
 
 
@@ -144,6 +149,7 @@ window.nurx = (function() {
             selectedPane: selectedPane,
             statsData: statsData,
             profileData: profileData,
+            isConnected: isConnected,
         
             // Functions.
             init: init,
@@ -158,7 +164,7 @@ window.nurx = (function() {
             }
         }
 
-        // Add th instance to the root viewmodel.
+        // Add the instance to the root viewmodel.
         instances.push(nurxInstance);
         nurxInstance.init();
     }
@@ -236,13 +242,16 @@ window.nurx = (function() {
 
     var vm = {    
         pokedata: pokedata,
+
         instances: instances,
         selectedInstanceIdx: selectedInstanceIdx,
         newInstUrl: newInstUrl,
         newInstUser: newInstUser,
-        newInstPass: newInstPass,
+        newInstPass: newInstPass,        
 
         registerPanel: registerPanel,
+        createInstance: createInstance,
+        resizeWindow: resizeWindow,
         showNewInstanceDialog: showNewInstanceDialog,
         createNewInstanceTab: createNewInstanceTab,
         closeNewInstanceModal: closeNewInstanceModal

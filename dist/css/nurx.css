@@ -18,6 +18,30 @@ h2 {
   font-weight: 200;
   font-size: 20px;
 }
+.pad-h-10 {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.pad-h-15 {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.pad-h-20 {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.pad-v-10 {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.pad-v-15 {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.pad-v-20 {
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
 /*
  * MODAL
  */
