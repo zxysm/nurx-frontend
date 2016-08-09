@@ -1,4 +1,5 @@
 var jsfiles = [
+    './src/js/kobindings.js',
     './src/js/pokedata.js',
     './src/js/app.js',
     './src/js/sessionloader.js',

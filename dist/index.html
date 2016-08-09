@@ -5,36 +5,39 @@
 
         <meta charset="UTF-8">
 
-        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="css/materialize.min.css" rel="stylesheet" type="text/css" />
         <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="css/opensans.css" rel="stylesheet" type="text/css" />
         <link href="css/nurx.min.css" rel="stylesheet" type="text/css" />        
     </head>
     <body>
 
-        <div class="modal"></div>
-
-        <div class="modal-window" id="instance-create-modal">
-            <div class="modal-window-header">Create Instance</div>
-            <div class="modal-window-content">
-                <div class="form-group">
+        <div id="instance-create-modal" class="modal">
+            <div class="modal-content">
+                <div class="input-field">                    
+                    <input data-bind="matInput: newInstUrl, value: newInstUrl" type="text" id='instance-url' />
                     <label for='instance-url'>Server URL:</label>
-                    <input data-bind="value: newInstUrl" type="text" id='instance-url' class="nurx-control" />
                 </div>
 
-                <div class="form-group">
+                <div class="input-field">                    
+                    <input data-bind="matInput: newInstUser, value: newInstUser" type="text" id='instance-user' />
                     <label for='instance-user'>Username:</label>
-                    <input data-bind="value: newInstUser" type="text" id='instance-user' class="nurx-control" />
                 </div>
 
-                <div class="form-group">
-                	<label for='instance-pass'>Password:</label>
-                    <input data-bind="value: newInstPass" type="passwrod" id='instance-pass' class="nurx-control" />
+                <div class="input-field">                	
+                    <input data-bind="value: newInstPass" type="password" id='instance-pass' />
+                    <label for='instance-pass'>Password:</label>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#"
+                    data-bind="click: function() { createNewInstanceTab(); }" 
+                    class="waves-effect waves-light btn">Create New Tab</a>
 
-                <div class="form-group clearfix text-right">
-                    <a href="#" data-bind="click: function() { createNewInstanceTab(); }" class="nurx-btn">Create New Tab</a>
-                </div>
+                <a href="#!"
+                    data-bind="click: function() { closeNewInstanceModal(); }" 
+                    class="modal-action waves-effect waves-light btn blue-grey darken-1"
+                    style='margin-right: 5px;'>Close</a>
             </div>
         </div>
 
@@ -52,9 +55,10 @@
                     </div>
                 </div>
 
-                <div class="instance-tab new-instance-tab" data-bind="click: function() { showNewInstanceDialog(); }">
-                    <span>+</span>
-                </div>
+                 <a 
+                    class="instance-tab new-instance-tab" 
+                    href="#"
+                    data-bind="click: function() { showNewInstanceDialog(); }">+</a>
             </div>
 
             <div data-bind="foreach: instances">
@@ -67,7 +71,7 @@
                             <span class="small" data-bind="text: statsData() != null ? ('Level: ' + statsData().Level + ' (' + statsData().CurrentXp + '/' + statsData().LevelupXp + ')') : ''"></span>
                         </div>
 
-                        <nav>
+                        <div>
                             <div class="nav-item" data-bind="
                                 css: { 'nav-item-selected': (selectedPane() == 'navigation') },
                                 click: function() { selectedPane('navigation'); }
@@ -89,7 +93,7 @@
                                 <span class="nav-icon"><img src="img/pokeball.png" style="height: auto; width: 16px;" /></span>
                                 <span>Pokemon</span>
                             </div>                
-                        </nav>
+                        </div>
                     </div>
 
                     <div class="pane-container">
@@ -102,13 +106,15 @@
                         <div class="pane pane-padded" data-bind="css: { 'pane-hidden': (selectedPane() != 'pokemon') }">
                             <h1>Pokemon</h1>
 
-                            <div class="col-md-4 col-sm-6">
+                            <div class="row">
                                 <div data-bind="foreach: pokemon.pokemonListSorted">
-                                    <div class="pokemon-row clearfix">
-                                        <div class="poke-image" data-bind="attr: { style: 'background-image: url(img/pokemon/' + Base.PokemonId + '.png)' }"></div>
-                                        <div class="poke-data">
-                                            <div><span class="poke-name" data-bind="text: $root.pokedata.pokemon[Base.PokemonId]"></span></div>
-                                            <div><span class="poke-cpiv" data-bind="text: '( CP: ' + Base.Cp + ' IV: ' + Perfection.toPrecision(4) + '% )'"></span></div>
+                                    <div class="col s6">
+                                        <div class="pokemon-row">
+                                            <div class="poke-image" data-bind="attr: { style: 'background-image: url(img/pokemon/' + Base.PokemonId + '.png)' }"></div>
+                                            <div class="poke-data">
+                                                <div><span class="poke-name" data-bind="text: $root.pokedata.pokemon[Base.PokemonId]"></span></div>
+                                                <div><span class="poke-cpiv" data-bind="text: '( CP: ' + Base.Cp + ' IV: ' + Perfection.toPrecision(4) + '% )'"></span></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -125,7 +131,7 @@
         </div>
 
         <script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
-        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/materialize.min.js"></script>
         <script type="text/javascript" src="js/knockout-min.js"></script>
         <script type="text/javascript" src="js/numeral.min.js"></script>
         <script src='https://maps.googleapis.com/maps/api/js?v=3.exp'></script>

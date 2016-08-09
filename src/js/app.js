@@ -197,12 +197,13 @@ window.nurx = (function() {
      * Show the dialog for adding a new instance.
      */
     function showNewInstanceDialog() {
-        $(".modal").fadeIn(200);
-        $("#global").addClass("modal-active");
-        $("#instance-create-modal").fadeIn(200);
+        $('#instance-create-modal').openModal();
+        $('#global').addClass('modal-active');
+
         newInstUrl("localhost:" + DEFAULT_SERVICE_PORT);
         newInstUser("admin");
         newInstPass("");
+        Materialize.updateTextFields();
     }
 
     /**
@@ -211,12 +212,17 @@ window.nurx = (function() {
     function createNewInstanceTab() {
         createInstance(newInstUrl(), newInstUser(), newInstPass());
 
-        $(".modal").fadeOut(200);
-        $("#global").removeClass("modal-active");
-        $("#instance-create-modal").fadeOut(200);
-
         selectedInstanceIdx(instances().length - 1);
+        closeNewInstanceModal();
         resizeWindow();        
+    }
+
+    /**
+     * Close the new instance modal.
+     */
+    function closeNewInstanceModal() {
+        $('#instance-create-modal').closeModal();
+        $('#global').removeClass('modal-active');
     }
 
     // Setup window events, initialize window.
@@ -224,6 +230,8 @@ window.nurx = (function() {
     $(document).ready(function() {       
         ko.applyBindings(vm);
         resizeWindow();
+
+        $('.modal-trigger').leanModal(); 
     })
 
     var vm = {    
@@ -236,7 +244,8 @@ window.nurx = (function() {
 
         registerPanel: registerPanel,
         showNewInstanceDialog: showNewInstanceDialog,
-        createNewInstanceTab: createNewInstanceTab
+        createNewInstanceTab: createNewInstanceTab,
+        closeNewInstanceModal: closeNewInstanceModal
     };   
     return vm;
 })();

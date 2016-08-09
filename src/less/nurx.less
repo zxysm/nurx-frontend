@@ -30,16 +30,11 @@ h2 {
  */
 
 .modal {
-    background-color: rgba(0, 0, 0, 0.7);
-    position: fixed;
-    top: 0; 
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    display: none;
+    background-color: #333 !important;
+}
 
-    filter: blur(200px);
+.modal-footer {
+    background-color: #303030 !important;
 }
 
 #global {
@@ -58,65 +53,6 @@ h2 {
 #global.modal-active {
     transform: scale(0.95);
     filter: blur(200px);
-}
-
-.modal-window {
-    border: 2px solid #007acc;
-    background-color: #333;
-
-    z-index: 2000;
-    position: fixed;
-    top: 100px;
-
-    width: 50%;
-    left: 25%;
-    display: none;
-
-    box-shadow: 0 0 20px #000;
-}
-
-.modal-window-header {
-    background-color: #007acc;
-    color: #fff;
-    font-size: 12px;
-    font-weight: 400;
-    padding: 5px;
-}
-
-.modal-window-content {
-    padding: 20;
-    color: #fff;
-}
-
-.nurx-btn {
-    border: 1px solid #444;
-    padding: 10px;
-    color: #fff;
-    background-color: #222;
-
-    margin-top: 20px;
-    font-weight: 300;
-    
-    font-weight: 14px;
-}
-
-.nurx-btn:hover, .nurx-btn:focus, .nurx-btn:active {
-    background-color: #333;
-    color: #fff;
-    text-decoration: none !important;
-}
-
-.nurx-control {
-    width: 100%;
-    border: 1px solid #444;
-    background-color: #222;
-    color: #fff;
-    padding: 5px;
-}
-
-.form-group label {
-    font-weight: 200;
-    font-size: 20px;
 }
 
 /*
@@ -294,8 +230,12 @@ header {
  */
 
 .pokemon-row {
-    margin-bottom: 10px;
-    padding: 10px;
+    display: inline-block;
+    width: 100%;
+    overflow: hidden;
+
+    margin-bottom: 20px;
+    padding: 15px;
     background-color: #2a2a2a;
 }
 
