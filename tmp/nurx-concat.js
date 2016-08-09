@@ -261,6 +261,7 @@ window.nurx = (function() {
      * Show the dialog for adding a new instance.
      */
     function showNewInstanceDialog() {
+        $('#global').addClass('modal-active');
         $('#instance-create-modal').openModal(defaultModalOptions);
 
         newInstUrl("localhost:" + DEFAULT_SERVICE_PORT);
