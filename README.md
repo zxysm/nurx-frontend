@@ -3,8 +3,10 @@ A web-based frontend for NecroBot.
 
 ## Compiling
 
-`npm install`
-`npm run build`
+```
+npm install
+npm run build
+```
 
 ## Installation
 
@@ -12,8 +14,10 @@ A web-based frontend for NecroBot.
 
 2. Set the following config.json parameters.
 
-`UseWebsocket: true`
-`WebSocketType: "nurx"`
+```
+UseWebsocket: true,
+WebSocketType: "nurx"
+```
 
 3. Start NecroBot and wait for it to log in.
 
