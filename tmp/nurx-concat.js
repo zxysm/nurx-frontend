@@ -135,10 +135,13 @@ window.nurx = (function() {
                     wsConnectTries = 0;
                     
                     // Initial data retrieval.
-                    sendCommand("location", {});
-                    sendCommand("profile", {});
-                    sendCommand("pokemonlist", {});
-                    sendCommand("pokestops", {});
+                    setTimeout(function() {
+                        sendCommand("location", {});
+                        sendCommand("profile", {});
+                        sendCommand("pokemonlist", {});
+                        sendCommand("pokestops", {});
+                        sendCommand("inventorylist", {});
+                    }, 1000);
 
                     pokestopInterval = setInterval(function() {
                         sendCommand("pokestop", {}); 
@@ -229,7 +232,7 @@ window.nurx = (function() {
                 commandListeners[message.MessageType](message);
                 return;
             }
-
+            
             // Default commands.
             switch(message.MessageType) {
                 case "profile":
@@ -590,9 +593,49 @@ window.nurx.registerPanel("navigation", function(nurx) {
         });
     }
 
+
+    /**
+     * Show an encounter on the map.     
+     */
+    function showEncounter(encounter) {
+        
+    }
+
+    /**
+     * Handle nearby encounters.
+     */
+    function encounterNearby(message) { 
+        console.log("Nearby encounter: ", message);
+
+        showEncounter({
+            PokemonData: message.Data.PokemonData,
+            Lat: message.Data.Latitude,
+            Lng: message.Data.Longitude,
+            SpawnId: message.Data.SpawnPointId,
+            EncounterId: messageData.EncounterId
+        });
+    }
+
+
+    /**
+     * Handle lure encounters.
+     */
+    function encounterLure(message) { }
+
+
+    /**
+     * Handle incense encounters.
+     */
+    function encounterIncense(message) { }
+
+
     // Setup websockets command listners.
     nurx.commandListeners["update_location"] = updateLocation;
     nurx.commandListeners["pokestops"] = loadPokestops;
+    nurx.commandListeners["encounter_nearby"] = encounterNearby;
+    nurx.commandListeners["encounter_lure"] = encounterLure;
+    nurx.commandListeners["encounter_incense"] = encounterIncense;
+    
 
     return {   
         init: init
@@ -705,6 +748,52 @@ window.nurx.registerPanel("pokemon", function(nurx) {
 
         // Functions.
         sortBy: sortBy,
+        init: function() {}
+    };
+});
+window.nurx.registerPanel("inventory", function(nurx) {
+
+    // Observables.
+    var inventoryListData = ko.observableArray([]);
+    
+    var items = ko.computed(function() {
+        var clonedData = JSON.parse(JSON.stringify(inventoryListData()));
+        
+        var containsNullPoke = true;
+        while(containsNullPoke) {
+            containsNullPoke = false;
+            for(var i = 0; i < clonedData.length; i++) {
+                if(clonedData[i] == null) {
+                    clonedData.splice(i, 1);
+                    containsNullPoke = true;
+                    break;
+                }
+            }
+        }
+
+        return clonedData;
+    });
+    // Computeds.
+
+    // Functions.
+
+    /**
+     * Handle websockets data update.
+     */
+    function loadInventoryList(message) {
+        console.log("inventory message", message);
+        inventoryListData(message.Data); 
+    }
+
+    // Setup websockets command listners.
+    nurx.commandListeners["inventorylist"] = loadInventoryList;
+
+    return {
+        // Observables.
+        inventoryListData: inventoryListData,
+        items: items,
+
+        // Functions.
         init: function() {}
     };
 });

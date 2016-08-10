@@ -1,4 +1,3 @@
-
 window.nurx.registerPanel("inventory", function(nurx) {
 
     // Observables.
@@ -28,7 +27,8 @@ window.nurx.registerPanel("inventory", function(nurx) {
     /**
      * Handle websockets data update.
      */
-    function loadInventoryList(message) {
+    function loadInventoryList(message) {      
+    function loadInventoryList(message) {      
         inventoryListData(message.Data); 
     }
 
@@ -38,6 +38,7 @@ window.nurx.registerPanel("inventory", function(nurx) {
     return {
         // Observables.
         inventoryListData: inventoryListData,
+        items: items,
 
         // Functions.
         init: function() {}

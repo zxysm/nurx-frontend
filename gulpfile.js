@@ -6,6 +6,7 @@ var jsfiles = [
     './src/js/panels/log.js',
     './src/js/panels/navigation.js',
     './src/js/panels/pokemon.js',
+    './src/js/panels/inventory.js'
 ];
 
 var gulp = require('gulp'),

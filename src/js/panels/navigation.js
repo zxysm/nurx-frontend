@@ -81,9 +81,49 @@ window.nurx.registerPanel("navigation", function(nurx) {
         });
     }
 
+
+    /**
+     * Show an encounter on the map.     
+     */
+    function showEncounter(encounter) {
+
+    }
+
+    /**
+     * Handle nearby encounters.
+     */
+    function encounterNearby(message) { 
+        console.log("Nearby encounter: ", message);
+
+        showEncounter({
+            PokemonData: message.Data.PokemonData,
+            Lat: message.Data.Latitude,
+            Lng: message.Data.Longitude,
+            SpawnId: message.Data.SpawnPointId,
+            EncounterId: message.Data.EncounterId
+        });
+    }
+
+
+    /**
+     * Handle lure encounters.
+     */
+    function encounterLure(message) { }
+
+
+    /**
+     * Handle incense encounters.
+     */
+    function encounterIncense(message) { }
+
+
     // Setup websockets command listners.
     nurx.commandListeners["update_location"] = updateLocation;
     nurx.commandListeners["pokestops"] = loadPokestops;
+    nurx.commandListeners["encounter_nearby"] = encounterNearby;
+    nurx.commandListeners["encounter_lure"] = encounterLure;
+    nurx.commandListeners["encounter_incense"] = encounterIncense;
+    
 
     return {   
         init: init
