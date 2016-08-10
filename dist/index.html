@@ -43,6 +43,22 @@
             </div>
         </div>
 
+        <!-- SSL Check -->
+        <div id="ssl-check-modal"class="modal">
+            <div class="modal-content center">
+                <p>It appears Nurx was able to connect to NecroBot via an enencrypted connection, but not the encrypted connection. This may mean that you have not set your browser to accept the self signed certificate that NecroBot uses.</p>
+
+                <p>Please click the link below and allow the certificate, then come back to Nurx and click OK.</p>
+
+                <p><a data-bind="attr: { href: SSLCheckUrl() }, text: SSLCheckUrl()" target="_blank"></a></p>
+
+                <p><a 
+                    data-bind="click: function() { triggerReconnectAll(); }"
+                    class="modal-action modal-close waves-effect waves-light btn blue-grey darken-1" 
+                    href="#!">OK</a></p>
+            </div>
+        </div>
+
         <!-- TAB CLOSE MODAL -->
         <div id="instance-close-modal" class="modal">
             <div class="modal-content center">

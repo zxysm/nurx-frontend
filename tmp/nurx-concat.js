@@ -67,6 +67,8 @@ window.nurx = (function() {
     var newInstUrl = ko.observable();
     var newInstUser = ko.observable();
     var newInstPass = ko.observable();
+
+    var SSLCheckUrl = ko.observable();
     
     // Functions.
 
@@ -148,10 +150,19 @@ window.nurx = (function() {
                     isConnected(false);
                     console.log( "Server connection closed."); 
                     regainConnection();
+                    checkSSL();
                 }
             } catch(err) {
                 console.log(err);
             }
+        }
+
+        /**
+         * Reconnect if the instance isnt connected.
+         */
+        function triggerReconnect() {
+            if(!isConnected())
+                connectSocketServer();
         }
 
         /**
@@ -176,6 +187,22 @@ window.nurx = (function() {
             
             wsConnectTries++;
             setTimeout(connectSocketServer, timeout);    
+        }
+
+        /**
+         * Check to see if perhaps the SSL self signed cert hasnt been accepted.
+         */
+        function checkSSL() {
+            var uSplit = wsUrl.split(":");
+            var url = uSplit[0];
+            var port = parseInt(uSplit[1], 10);
+
+            var testws = new WebSocket('ws://' + url + ':' + (port + 1) + '/');    
+            testws.onopen = function () {
+                window.nurx.SSLCheckUrl("https://" + url + ":" + port + "/");
+                $('#global').addClass('modal-active');
+                $("#ssl-check-modal").openModal(defaultModalOptions);
+            } 
         }
 
         /**
@@ -239,7 +266,8 @@ window.nurx = (function() {
         
             // Functions.
             init: init,
-            sendCommand: sendCommand
+            sendCommand: sendCommand,
+            triggerReconnect: triggerReconnect
         }
 
         // For each panel we have, initialize it and inject it into the instance.
@@ -284,6 +312,15 @@ window.nurx = (function() {
         });
     }
 
+
+    /**
+     * Triger reconnect on all non-connected instances.
+     */
+    function triggerReconnectAll() {
+        ko.utils.arrayForEach(window.nurx.instances(), function(instance) {
+            instance.triggerReconnect();
+        });
+    }
 
     /**
      * Show the dialog for adding a new instance.
@@ -370,11 +407,13 @@ window.nurx = (function() {
         selectedInstanceIdx: selectedInstanceIdx,
         newInstUrl: newInstUrl,
         newInstUser: newInstUser,
-        newInstPass: newInstPass,        
+        newInstPass: newInstPass,  
+        SSLCheckUrl: SSLCheckUrl,      
 
         registerPanel: registerPanel,
         createInstance: createInstance,
         resizeWindow: resizeWindow,
+        triggerReconnectAll: triggerReconnectAll,
         showNewInstanceDialog: showNewInstanceDialog,
         createNewInstanceTab: createNewInstanceTab,
         closeNewInstanceModal: closeNewInstanceModal,
