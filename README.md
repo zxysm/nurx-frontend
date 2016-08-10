@@ -17,7 +17,7 @@ A web-based frontend for NecroBot.
 
 3. Start NecroBot and wait for it to log in.
 
-4. (Do this once) Open a browser and navigate to http://localhost:14251 and accept the self signed certificate.
+4. (Do this once) Open a browser and navigate to https://localhost:14251 and accept the self signed certificate.
 
 5. Open nurx-frontend/dist/index.html
 
