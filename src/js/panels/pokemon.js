@@ -45,9 +45,7 @@ window.nurx.registerPanel("pokemon", function(nurx) {
             else
                 return a.Base[pokemonSortField()] > b.Base[pokemonSortField()] ? compLHS : compRHS;
         });
-
-        console.log(clonedData);
-
+        
         return clonedData;
     });
 

@@ -242,6 +242,44 @@ window.nurx = (function() {
         $('#instance-create-modal').closeModal(defaultModalOptions);
     }
 
+    
+    /**
+     * Show the close instance modal.
+     */
+    var closeModalInstanceId;
+    function showCloseInstanceModal(instanceId) {
+        closeModalInstanceId = instanceId;
+
+        $('#global').addClass('modal-active');
+        $("#instance-close-modal").openModal(defaultModalOptions);
+    }
+
+    /**
+     * Handle an instance close confirmation.
+     */
+    function closeInstance() {
+        for(var i = 0; i < instances().length; i++) {
+            if(instances()[i].instanceId == closeModalInstanceId) {
+                instances.splice(i, 1);
+                break;
+            }
+        }
+
+        if(instances().length > 0 && selectedInstanceIdx() >= instances().length)
+            selectedInstanceIdx(instances().length - 1);
+
+        closeCloseInstanceModal();
+    }
+
+
+    /**
+     * Close the close instance modal.
+     */
+    function closeCloseInstanceModal() {
+        $('#global').removeClass('modal-active');
+        $("#instance-close-modal").closeModal(defaultModalOptions);
+    }
+
     // Setup window events, initialize window.
     $(window).resize(resizeWindow);
     $(document).ready(function() {       
@@ -265,7 +303,10 @@ window.nurx = (function() {
         resizeWindow: resizeWindow,
         showNewInstanceDialog: showNewInstanceDialog,
         createNewInstanceTab: createNewInstanceTab,
-        closeNewInstanceModal: closeNewInstanceModal
+        closeNewInstanceModal: closeNewInstanceModal,
+        showCloseInstanceModal: showCloseInstanceModal,
+        closeInstance: closeInstance,
+        closeCloseInstanceModal: closeCloseInstanceModal
     };   
     return vm;
 })();

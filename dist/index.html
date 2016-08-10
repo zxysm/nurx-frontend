@@ -13,6 +13,7 @@
     </head>
     <body>
 
+        <!-- TAB CREATION MODAL -->
         <div id="instance-create-modal" class="modal">
             <div class="modal-content">
                 <div class="input-field">                    
@@ -42,6 +43,24 @@
             </div>
         </div>
 
+        <!-- TAB CLOSE MODAL -->
+        <div id="instance-close-modal" class="modal">
+            <div class="modal-content center">
+                Are you sure you want to close this tab?
+            </div>
+            <div class="modal-footer">
+                <a href="#"
+                    data-bind="click: function() { closeInstance(); }" 
+                    class="waves-effect waves-light btn red">Yes</a>
+
+                <a href="#!"
+                    data-bind="click: function() { closeNewInstanceModal(); }" 
+                    class="modal-action waves-effect waves-light btn blue-grey darken-1"
+                    style='margin-right: 5px;'>Cancel</a>
+            </div>
+        </div>
+
+        <!-- Global Start -->
         <div id="global">
             <div class="instance-list">
                 <header>
@@ -53,6 +72,7 @@
                         css: { 'instance-tab-selected':  ($root.selectedInstanceIdx() == $index()) },
                         click: function() { $root.selectedInstanceIdx($index()); }"> 
                         <span data-bind="text: (profileData() != null ? profileData().Username : '...')"></span>
+                        <a href="#" data-bind="click: function() { $root.showCloseInstanceModal(instanceId); }" class="tab-close-button">X</a>
                     </div>
                 </div>
 
