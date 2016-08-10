@@ -47,7 +47,7 @@ window.pokedata = {
 
 window.nurx = (function() {
 
-    var DEFAULT_SERVICE_PORT = 14151;
+    var DEFAULT_SERVICE_PORT = 14251;
     var SIDEBAR_WIDTH = 300;
     var LOG_HEIGHT = 200;
 
@@ -86,6 +86,7 @@ window.nurx = (function() {
         var instancePanels = {}
 
         var ws;   
+        var wsConnectTries = 0;
         var pokestopInterval;
 
         // Obserbables.
@@ -121,34 +122,61 @@ window.nurx = (function() {
                 return;
             }
 
-            ws = new window[support]('ws://' + wsUrl + '/');        
-            ws.onmessage = handleMessage;
+            try {
+                ws = new WebSocket('wss://' + wsUrl + '/');        
+                ws.onmessage = handleMessage;
 
-            // when the connection is established, this method is called
-            ws.onopen = function () { 
-                console.log( "Server connection opened." );
-                isConnected(true);
-                
-                // Initial data retrieval.
-                sendCommand("location", {});
-                sendCommand("profile", {});
-                sendCommand("pokemonlist", {});
-                sendCommand("pokestops", {});
+                // when the connection is established, this method is called
+                ws.onopen = function () { 
+                    console.log( "Server connection opened." );
+                    isConnected(true);
+                    wsConnectTries = 0;
+                    
+                    // Initial data retrieval.
+                    sendCommand("location", {});
+                    sendCommand("profile", {});
+                    sendCommand("pokemonlist", {});
+                    sendCommand("pokestops", {});
 
-                pokestopInterval = setInterval(function() {
-                    sendCommand("pokestop", {}); 
-                }, 1000 * 60 * 5);
-            }
+                    pokestopInterval = setInterval(function() {
+                        sendCommand("pokestop", {}); 
+                    }, 1000 * 60 * 5);
+                }
 
-            // when the connection is closed, this method is called
-            ws.onclose = function () { 
-                isConnected(false);
-                console.log( "Server connection closed."); 
-
-                connectionText("Connection lost, reconnecting...");
+                // when the connection is closed, this method is called
+                ws.onclose = function () { 
+                    isConnected(false);
+                    console.log( "Server connection closed."); 
+                    regainConnection();
+                }
+            } catch(err) {
+                console.log(err);
             }
         }
 
+        /**
+         * Attempt to regain the connection.
+         */
+        function regainConnection() {
+            var timeout;
+
+            if (wsConnectTries == 0) {
+                timeout = 1000;
+                connectionText("Connection lost<br />reconnecting ...");
+            } else if (wsConnectTries < 3) {
+                timeout = 20000;            // 20 seconds until 3rd try;
+                connectionText("Connection lost<br />trying again in 20 seconds ...");
+            } else if (wsConnectTries < 10) {
+                timeout = 1000 * 60 * 5;    // 5 minutes until 10th try.
+                connectionText("Connection lost<br />trying again in 5 minutes  ...");
+            } else {
+                timeout = 1000 * 60 * 20;   // 20 minutes.
+                connectionText("Connection lost<br />trying again in 20 minutes ...");
+            }
+            
+            wsConnectTries++;
+            setTimeout(connectSocketServer, timeout);    
+        }
 
         /**
          * Send a websockets command.
