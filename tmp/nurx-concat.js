@@ -1,3 +1,67 @@
+function CustomMarker(latlng, map, args) {
+	this.latlng = latlng;	
+	this.args = args;	
+	this.setMap(map);	
+}
+
+CustomMarker.prototype = new google.maps.OverlayView();
+
+CustomMarker.prototype.draw = function() {
+	
+	var self = this;
+	
+	var div = this.div;
+	
+	if (!div) {
+	
+		div = this.div = document.createElement('div');
+		
+		div.className = 'marker';
+
+		if(self.args.PokemonId !== 'undefined')
+			div.style['background-image'] = "img/pokemon/" + self.args.PokemonId + ".png";
+
+		div.style['background-size'] = "contain";
+		div.style['background-position'] = "center center";
+		
+		div.style.position = 'absolute';
+		div.style.cursor = 'pointer';
+		div.style.width = '30px';
+		div.style.height = '30px';
+		div.style.background = 'blue';
+		div.style['z-index'] = "100"
+		
+		if (typeof(self.args.marker_id) !== 'undefined') {
+			div.dataset.marker_id = self.args.marker_id;
+		}
+		
+		/*google.maps.event.addDomListener(div, "click", function(event) {
+			alert('You clicked on a custom marker!');			
+			google.maps.event.trigger(self, "click");
+		});*/
+		
+		var panes = this.getPanes();
+		panes.overlayImage.appendChild(div);
+	}
+	
+	var point = this.getProjection().fromLatLngToDivPixel(this.latlng);
+	
+	if (point) {
+		div.style.left = (point.x - 10) + 'px';
+		div.style.top = (point.y - 20) + 'px';
+	}
+};
+
+CustomMarker.prototype.remove = function() {
+	if (this.div) {
+		this.div.parentNode.removeChild(this.div);
+		this.div = null;
+	}	
+};
+
+CustomMarker.prototype.getPosition = function() {
+	return this.latlng;	
+};
 ko.bindingHandlers.matInput = {
     update: function(element, valueAccessor, allBindings) {
         // Find the "options" sub-binding:
@@ -517,6 +581,7 @@ window.nurx.registerPanel("navigation", function(nurx) {
     var map;
     var playerMarker;
     var fortMarkers = [];
+    var encounterMarkers = [];
 
     var mapStyle = [{"stylers":[{"hue":"#ff1a00"},{"invert_lightness":true},{"saturation":-100},{"lightness":33},{"gamma":0.5}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#2D333C"}]}];
 
@@ -598,7 +663,31 @@ window.nurx.registerPanel("navigation", function(nurx) {
      * Show an encounter on the map.     
      */
     function showEncounter(encounter) {
-        
+        /*var pokeMarker = new google.maps.Marker({
+            map: map,
+            position: new google.maps.LatLng(encounter.Lat, encounter.Lng),
+            icon: "img/pokemon/" + encounter.PokemonData.PokemonId + ".png",
+            zIndex: 100
+        });*/
+
+        var pokeMarker = new CustomMarker(
+            new google.maps.LatLng(encounter.Lat, encounter.Lng), 
+            map,
+            {
+                PokemonId:  encounter.PokemonData.PokemonId
+            }
+        );
+
+        encounterMarkers.push(pokeMarker);
+        setTimeout(function() {
+            pokeMarker.setMap(null);
+            for(var i = 0; i < encounterMarkers.length; i++) {
+                if(encounterMarkers[i] == pokeMarker) {
+                    encounterMarkers.splice(i, 1);
+                    return;
+                }                    
+            }
+        }, 1000 * 60 * 3);
     }
 
     /**
@@ -612,7 +701,7 @@ window.nurx.registerPanel("navigation", function(nurx) {
             Lat: message.Data.Latitude,
             Lng: message.Data.Longitude,
             SpawnId: message.Data.SpawnPointId,
-            EncounterId: messageData.EncounterId
+            EncounterId: message.Data.EncounterId
         });
     }
 
@@ -779,9 +868,8 @@ window.nurx.registerPanel("inventory", function(nurx) {
 
     /**
      * Handle websockets data update.
-     */
-    function loadInventoryList(message) {
-        console.log("inventory message", message);
+     */     
+    function loadInventoryList(message) {      
         inventoryListData(message.Data); 
     }
 

@@ -5,6 +5,7 @@ window.nurx.registerPanel("navigation", function(nurx) {
     var map;
     var playerMarker;
     var fortMarkers = [];
+    var encounterMarkers = [];
 
     var mapStyle = [{"stylers":[{"hue":"#ff1a00"},{"invert_lightness":true},{"saturation":-100},{"lightness":33},{"gamma":0.5}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#2D333C"}]}];
 
@@ -86,7 +87,31 @@ window.nurx.registerPanel("navigation", function(nurx) {
      * Show an encounter on the map.     
      */
     function showEncounter(encounter) {
+        /*var pokeMarker = new google.maps.Marker({
+            map: map,
+            position: new google.maps.LatLng(encounter.Lat, encounter.Lng),
+            icon: "img/pokemon/" + encounter.PokemonData.PokemonId + ".png",
+            zIndex: 100
+        });*/
 
+        var pokeMarker = new CustomMarker(
+            new google.maps.LatLng(encounter.Lat, encounter.Lng), 
+            map,
+            {
+                PokemonId:  encounter.PokemonData.PokemonId
+            }
+        );
+
+        encounterMarkers.push(pokeMarker);
+        setTimeout(function() {
+            pokeMarker.setMap(null);
+            for(var i = 0; i < encounterMarkers.length; i++) {
+                if(encounterMarkers[i] == pokeMarker) {
+                    encounterMarkers.splice(i, 1);
+                    return;
+                }                    
+            }
+        }, 1000 * 60 * 3);
     }
 
     /**

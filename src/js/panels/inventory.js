@@ -26,8 +26,7 @@ window.nurx.registerPanel("inventory", function(nurx) {
 
     /**
      * Handle websockets data update.
-     */
-    function loadInventoryList(message) {      
+     */     
     function loadInventoryList(message) {      
         inventoryListData(message.Data); 
     }
