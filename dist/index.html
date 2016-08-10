@@ -191,6 +191,25 @@
                             </div>
                         </div>
 
+                        <!-- Inventory -->
+                        <div class="pane pane-padded" data-bind="css: { 'pane-hidden': (selectedPane() != 'inventory') }">
+                            <h1>Inventory</h1>
+
+                            <div class="row">
+                                <div data-bind="foreach: inventory.items">
+                                    <div class="col s6">
+                                        <div class="item-row">
+                                            <div class="item-image" data-bind="attr: { style: 'background-image: url(img/inventory/' + Base.ItemId + '.png)' }"></div>
+                                            <div class="item-data">
+                                                <div><span class="item-name" data-bind="text: $root.pokedata.inventory[Base.ItemId]"></span></div>
+                                                <div><span class="item-count" data-bind="text: 'Count: ' + Base.Count + '.''"></span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Pokemon Panel -->
                         <div class="pane pane-padded" data-bind="css: { 'pane-hidden': (selectedPane() != 'pokemon') }">
                             <h1>Pokemon</h1>

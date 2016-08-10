@@ -93,6 +93,7 @@ window.nurx = (function() {
                     sendCommand("profile", {});
                     sendCommand("pokemonlist", {});
                     sendCommand("pokestops", {});
+                    sendCommand("inventorylist", {});
 
                     pokestopInterval = setInterval(function() {
                         sendCommand("pokestop", {}); 
@@ -183,7 +184,7 @@ window.nurx = (function() {
                 commandListeners[message.MessageType](message);
                 return;
             }
-
+            alert("message");
             // Default commands.
             switch(message.MessageType) {
                 case "profile":
